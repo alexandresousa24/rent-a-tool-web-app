@@ -108,3 +108,23 @@ demonstração.
     - **Dano** com valor ≥ 50€ → aciona a seguradora e congela os pagamentos (BR-07).
 12. Teste ainda o filtro **anti-bypass** nas mensagens (escreva um número de
     telemóvel ou email — é mascarado).
+
+## Como Executar os Testes Automatizados
+
+Os testes funcionais das User Stories foram gravados utilizando a extensão **Katalon Recorder**. Para executá-los em qualquer computador, siga estes passos:
+
+### 1. Pré-requisitos
+* Ter o navegador instalado (Google Chrome, Mozilla Firefox ou Microsoft Edge).
+* Instalar a extensão gratuita **Katalon Recorder (Selenium IDE)** na loja de extensões do seu browser.
+
+### 2. Importar os Testes
+1. Faça o download dos ficheiros de teste com a extensão `.krecorder` que estão na pasta Testes (ex: `US3.1_Filtros.krecorder` e `US3.2_Detalhe.krecorder`).
+2. Abra o **Katalon Recorder** clicando no ícone da extensão no seu navegador.
+3. No painel lateral esquerdo do Katalon, clique no botão de opções (três pontos) junto a "Test Suites" e selecione **"Open Test Suite..."**.
+4. Escolha os ficheiros `.krecorder` descarregados.
+
+### 3. Executar os Testes
+1. Certifique-se de que a aplicação web está aberta no seu navegador (em ambiente local ou através do link de produção no GitHub Pages).
+2. No Katalon Recorder, selecione o caso de teste que deseja correr. 
+3. Clique no botão **"Play"** (no topo do painel do Katalon) para ver o teste a ser executado automaticamente no seu ecrã. 
+4. Verifique no painel inferior ("Log") se todos os passos ficaram verdes (Sucesso). 
