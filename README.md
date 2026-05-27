@@ -1,4 +1,4 @@
-# Rent-a-Tool · Incremento 1 (MAS · 40431)
+# Rent-a-Tool · Incremento 1 (MAS)
 
 Aplicação web do projeto **Rent-a-Tool**, plataforma P2P de aluguer de
 ferramentas de bricolage e jardim. Este repositório corresponde ao
@@ -108,3 +108,25 @@ demonstração.
     - **Dano** com valor ≥ 50€ → aciona a seguradora e congela os pagamentos (BR-07).
 12. Teste ainda o filtro **anti-bypass** nas mensagens (escreva um número de
     telemóvel ou email — é mascarado).
+
+## Como Executar os Testes Automatizados
+
+Os testes funcionais das *User Stories* (US) foram gravados utilizando a extensão **Katalon Recorder**. Para os executares em qualquer computador, basta seguires estes passos simples:
+
+### 1. Pré-requisitos
+* Ter um navegador moderno instalado (Google Chrome, Mozilla Firefox ou Microsoft Edge).
+* Instalar a extensão gratuita **Katalon Recorder (Selenium IDE)** através da loja de extensões oficial do teu browser.
+
+### 2. Importar os Testes
+1. Entra na pasta de testes do projeto e faz o download dos ficheiros de teste com a extensão `.krecorder` (ex: `US1_CriarConta.krecorder`, `US3.1_Filtros.krecorder`, etc.).
+2. Abre o Katalon Recorder clicando no ícone da extensão no canto superior do teu navegador.
+3. No painel lateral esquerdo do Katalon, clica no botão de opções (os três pontos) ao lado de **"Test Suites"** e escolhe a opção **"Open Test Suite..."**.
+4. Seleciona os ficheiros `.krecorder` que descarregaste da nossa pasta.
+
+### 3. Executar as Validações
+1. Garante que o site da aplicação está aberto no teu browser (pode ser a correr localmente em `http://localhost:8000` ou direto no link de produção do GitHub Pages).
+2. Na barra lateral do Katalon Recorder, clica no caso de teste que queres validar.
+3. Clica no botão **"Play"** (no topo do painel do Katalon) para veres o robô a simular os cliques e preenchimentos de forma automática no teu ecrã.
+4. Espreita o painel inferior (**"Log"**) para confirmar se todos os passos ficaram verdes (Sucesso!).
+
+> **Nota importante para a US1 (Criar Conta):** Este script clica automaticamente no botão *"Repor dados"* no rodapé no início do fluxo. Fizemos isto de propósito para limpar o `LocalStorage`, garantindo que o teste corre sempre do zero e limpo, sem dar erros de e-mails duplicados de execuções anteriores!
