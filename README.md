@@ -109,6 +109,8 @@ demonstração.
 12. Teste ainda o filtro **anti-bypass** nas mensagens (escreva um número de
     telemóvel ou email — é mascarado).
 
+
+
 ## Como Executar os Testes Automatizados
 
 Os testes funcionais das *User Stories* (US) foram gravados utilizando a extensão **Katalon Recorder**. Para os executares em qualquer computador, basta seguires estes passos simples:
