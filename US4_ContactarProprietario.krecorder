@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Untitled Test Suite</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Untitled Test Case</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>https://alexandresousa24.github.io/rent-a-tool-web-app/#/mensagens/th_2a1es2wc11<datalist><option>https://alexandresousa24.github.io/rent-a-tool-web-app/#/mensagens/th_2a1es2wc11</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>id=btnContactOwner<datalist><option>id=btnContactOwner</option><option>xpath=//button[@id='btnContactOwner']</option><option>xpath=//main[@id='view']/section/div/div/button</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='✓ Trusted'])[2]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='★★★★★'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='/ dia'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Data de início'])[1]/preceding::button[1]</option><option>xpath=//*/text()[normalize-space(.)='💬 Contactar o proprietário']/parent::*</option><option>xpath=//section/div/div/button</option><option>css=#btnContactOwner</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>name=text<datalist><option>name=text</option><option>xpath=//input[@name='text']</option><option>xpath=//form[@id='chatForm']/input</option><option>xpath=//input</option><option>css=input[name="text"]</option></datalist></td><td></td></tr>
+<tr><td>type</td><td>name=text<datalist><option>name=text</option><option>xpath=//input[@name='text']</option><option>xpath=//form[@id='chatForm']/input</option><option>xpath=//input</option><option>css=input[name="text"]</option></datalist></td><td>Olá! Gostava de alugar a serra.</td></tr>
+<tr><td>click</td><td>xpath=//button[@type='submit']<datalist><option>xpath=//button[@type='submit']</option><option>xpath=//form[@id='chatForm']/button</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Serra circular Makita 1400W'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Rent-a-Tool'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Como funciona'])[1]/preceding::button[1]</option><option>xpath=//*/text()[normalize-space(.)='Enviar']/parent::*</option><option>xpath=//form/button</option><option>css=button.btn.btn--primary</option></datalist></td><td></td></tr>
+</tbody></table>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>US1_CriarConta</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">US1_CriarConta_Perfeito</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>https://alexandresousa24.github.io/rent-a-tool-web-app/#/</td><td></td></tr>
+<tr><td>click</td><td>xpath=//button[contains(text(),'Repor dados')]</td><td></td></tr>
+<tr><td>open</td><td>https://alexandresousa24.github.io/rent-a-tool-web-app/#/registo</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>Amber</td></tr>
+<tr><td>select</td><td>name=city</td><td>label=Lisboa</td></tr>
+<tr><td>type</td><td>name=email</td><td>amberteste@gmail.com</td></tr>
+<tr><td>type</td><td>name=phone</td><td>912345678</td></tr>
+<tr><td>type</td><td>name=birthDate</td><td>2000-12-25</td></tr>
+<tr><td>click</td><td>xpath=//form[@id='registerForm']/p</td><td></td></tr>
+<tr><td>click</td><td>xpath=//form[@id='registerForm']/button[@type='submit']</td><td></td></tr>
+<tr><td>verifyText</td><td>link=Meus alugueres</td><td>Meus alugueres</td></tr>
+</tbody>
+</table>
+</body>
+</html>
