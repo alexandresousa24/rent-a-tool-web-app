@@ -1,4 +1,4 @@
-# Rent-a-Tool · Incremento 1 (MAS · 40431)
+# Rent-a-Tool · Incremento 1 (MAS)
 
 Aplicação web do projeto **Rent-a-Tool**, plataforma P2P de aluguer de
 ferramentas de bricolage e jardim. Este repositório corresponde ao
@@ -108,3 +108,27 @@ demonstração.
     - **Dano** com valor ≥ 50€ → aciona a seguradora e congela os pagamentos (BR-07).
 12. Teste ainda o filtro **anti-bypass** nas mensagens (escreva um número de
     telemóvel ou email — é mascarado).
+
+
+
+## Como Executar os Testes Automatizados
+
+Os testes funcionais das *User Stories* (US) foram gravados utilizando a extensão **Katalon Recorder**. Para os executares em qualquer computador, basta seguir estes passos simples:
+
+### 1. Pré-requisitos
+* Ter um navegador instalado (Google Chrome, Mozilla Firefox ou Microsoft Edge).
+* Instalar a extensão gratuita **Katalon Recorder (Selenium IDE)** através da loja de extensões oficial do seu browser.
+
+### 2. Importar os Testes
+1. Entre na pasta de testes do projeto e faça o download dos ficheiros de teste com a extensão `.krecorder` (ex: `US1_CriarConta.krecorder`, `US3.1_Filtros.krecorder`, etc.).
+2. Abra o Katalon Recorder clicando no ícone da extensão no canto superior do seu navegador.
+3. No painel lateral esquerdo do Katalon, clique no botão de opções (os três pontos) ao lado de **"Test Suites"** e escolha a opção **"Open Test Suite..."**.
+4. Selecione os ficheiros `.krecorder` descarregados.
+
+### 3. Executar os Testes
+1. Certifique-se de que a aplicação web está aberta no seu navegador (em ambiente local ou através do link de produção no GitHub Pages).
+2. Na barra lateral do Katalon Recorder, clique no caso de teste que deseja validar.
+3. Clique no botão **"Play"** (no topo do painel do Katalon) para ver o robô a simular os cliques e preenchimentos de forma automática no seu ecrã.
+4. Verifique no painel inferior ("Log") se todos os passos ficaram verdes (Sucesso).
+
+> **Nota importante para a US1 (Criar Conta):** Este script clica automaticamente no botão *"Repor dados"* no rodapé no início do fluxo. Fizemos isto de propósito para limpar o `LocalStorage`, garantindo que o teste corre sempre do zero e limpo, sem dar erros de e-mails duplicados de execuções anteriores!

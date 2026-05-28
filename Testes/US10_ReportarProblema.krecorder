@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Untitled Test Suite</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Untitled Test Case</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>https://alexandresousa24.github.io/rent-a-tool-web-app/#/meus-alugueres<datalist><option>https://alexandresousa24.github.io/rent-a-tool-web-app/#/meus-alugueres</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>link=Meus alugueres<datalist><option>link=Meus alugueres</option><option>xpath=//a[contains(text(),'Meus alugueres')]</option><option>xpath=//header[@id='topbar']/div/nav/a[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Pesquisar'])[1]/following::a[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Aluguer de Confiança'])[1]/following::a[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Amber'])[1]/preceding::a[2]</option><option>xpath=//*/text()[normalize-space(.)='Meus alugueres']/parent::*</option><option>xpath=//a[contains(@href, '#/meus-alugueres')]</option><option>xpath=//a[2]</option></datalist></td><td></td></tr>
+<tr><td>open</td><td>https://alexandresousa24.github.io/rent-a-tool-web-app/#/aluguer/rt_x7sgzlwau3<datalist><option>https://alexandresousa24.github.io/rent-a-tool-web-app/#/aluguer/rt_x7sgzlwau3</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>xpath=//main[@id='view']/section/div[2]/div/div[2]/h3<datalist><option>xpath=//main[@id='view']/section/div[2]/div/div[2]/h3</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Em curso'])[1]/preceding::h3[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Sem alugueres próximos'])[1]/preceding::h3[1]</option><option>xpath=//*/text()[normalize-space(.)='Berbequim sem fios Bosch 18V']/parent::*</option><option>xpath=//h3</option><option>css=h3.rental-card__title</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>xpath=//main[@id='view']/section/div[2]/div/div[4]/button<datalist><option>xpath=//main[@id='view']/section/div[2]/div/div[4]/button</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='CAPTURED'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Total cativado'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Histórico'])[1]/preceding::button[1]</option><option>xpath=//*/text()[normalize-space(.)='⚠ Reportar problema']/parent::*</option><option>xpath=//div[4]/button</option><option>css=div.action-bar > button.btn.btn--ghost</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>name=notes<datalist><option>name=notes</option><option>xpath=//textarea[@name='notes']</option><option>xpath=//div[@id='modalBody']/label[2]/textarea</option><option>xpath=//textarea</option><option>css=textarea[name="notes"]</option></datalist></td><td></td></tr>
+<tr><td>type</td><td>name=notes<datalist><option>name=notes</option><option>xpath=//textarea[@name='notes']</option><option>xpath=//div[@id='modalBody']/label[2]/textarea</option><option>xpath=//textarea</option><option>css=textarea[name="notes"]</option></datalist></td><td>dano na ferramenta</td></tr>
+<tr><td>click</td><td>id=submitReport<datalist><option>id=submitReport</option><option>xpath=//button[@id='submitReport']</option><option>xpath=//footer[@id='modalFoot']/button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Cancelar'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='✓ Documento anexado'])[1]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Katalon Recorder is recording ...'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Stop'])[1]/preceding::button[1]</option><option>xpath=//*/text()[normalize-space(.)='Reportar']/parent::*</option><option>xpath=//button[2]</option><option>css=#submitReport</option></datalist></td><td></td></tr>
+</tbody></table>
+</body>
+</html>
