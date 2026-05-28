@@ -862,7 +862,14 @@ const App = (() => {
     UI.openModal({
       title: "Confirmar devolução (UC-08)",
       body: `
-        <p class="text-small text-muted">Confirme que recebeu a ferramenta de volta. Caso haja ocorrências, abre-se automaticamente um sinistro e o aluguer fica em disputa para análise.</p>
+        <p class="text-small text-muted">Após a inspeção física, registe a prova fotográfica e o resultado. É obrigatório submeter pelo menos ${Rentals.MIN_CHECKOUT_PHOTOS} fotografias.</p>
+        <div class="card" style="padding:14px;background:var(--c-surface-2);margin-bottom:14px">
+          <p class="text-small mt-0" style="margin-bottom:8px"><strong>📷 Fotografias de prova</strong></p>
+          <div class="flex flex--wrap" style="gap:8px">
+            ${[1,2,3].map(i => `<button type="button" class="btn btn--ghost btn--sm photo-slot" data-i="${i}">+ Foto ${i}</button>`).join("")}
+          </div>
+          <p class="text-small text-muted" style="margin:8px 0 0">Fotos registadas: <strong id="coPhotoCount">0</strong> / ${Rentals.MIN_CHECKOUT_PHOTOS} (simulação)</p>
+        </div>
         <label class="field" style="flex-direction:row;align-items:flex-start;gap:10px;padding:10px;border:1px solid var(--c-line);border-radius:8px">
           <input type="radio" name="result" value="ok" checked />
           <span>
@@ -874,7 +881,7 @@ const App = (() => {
           <input type="radio" name="result" value="issues" />
           <span>
             <strong>Com ocorrências</strong><br/>
-            <small class="text-muted">Abre disputa para mediação pelo administrador.</small>
+            <small class="text-muted">Abre disputa para mediação pelo administrador e congela pagamentos.</small>
           </span>
         </label>
         <label class="field">
@@ -884,16 +891,33 @@ const App = (() => {
       `,
       foot: `
         <button class="btn btn--ghost" data-close-modal>Cancelar</button>
-        <button class="btn btn--primary" id="confirmCheckout">Confirmar devolução</button>
+        <button class="btn btn--primary" id="confirmCheckout" disabled>Confirmar devolução</button>
       `
     });
-    UI.$("#confirmCheckout").addEventListener("click", () => {
+
+    let photos = 0;
+    const countEl = UI.$("#coPhotoCount");
+    const confirmBtn = UI.$("#confirmCheckout");
+    UI.$$(".photo-slot").forEach(slot => {
+      slot.addEventListener("click", () => {
+        if (slot.dataset.done) return;
+        slot.dataset.done = "1";
+        slot.textContent = "✓ Foto " + slot.dataset.i;
+        slot.classList.add("btn--primary");
+        slot.classList.remove("btn--ghost");
+        photos++;
+        countEl.textContent = photos;
+        if (photos >= Rentals.MIN_CHECKOUT_PHOTOS) confirmBtn.disabled = false;
+      });
+    });
+
+    confirmBtn.addEventListener("click", () => {
       const hasIssues = UI.$("input[name='result']:checked").value === "issues";
       const notes = UI.$("textarea[name='notes']").value;
       if (hasIssues && notes.trim().length < 5) { UI.toast("Descreva as ocorrências antes de submeter.", "warn"); return; }
-      const res = Rentals.checkOut({ rentalId: r.id, hasIssues, notes });
-      UI.closeModal();
+      const res = Rentals.checkOut({ rentalId: r.id, hasIssues, notes, photos });
       if (!res.ok) { UI.toast(res.error, "bad"); return; }
+      UI.closeModal();
       UI.toast(hasIssues ? "Devolução com ocorrências — aluguer em disputa." : "Devolução confirmada. Pagamento libertado!", hasIssues ? "warn" : "good");
       Router.resolve();
     });
@@ -1034,10 +1058,28 @@ const App = (() => {
     const reviews = [];
     if (r.reviewByOwner && !r.reviewByOwner.hidden) reviews.push({ ...r.reviewByOwner, who: "Proprietário" });
     if (r.reviewByRenter && !r.reviewByRenter.hidden) reviews.push({ ...r.reviewByRenter, who: "Arrendatário" });
+
     if (!reviews.length) {
+      // Avaliação(ões) ainda oculta(s) pela regra double-blind — mostrar prazo.
+      const base = r.finalizedAt || (r.checkout && r.checkout.at);
+      let daysLeftMsg = "";
+      if (base) {
+        const ageDays = (Date.now() - new Date(base).getTime()) / 86400000;
+        const left = Math.max(0, Math.ceil(Rentals.REVIEW_BLIND_DAYS - ageDays));
+        daysLeftMsg = left > 0
+          ? ` Será publicada automaticamente em ${left} dia(s), ou assim que a contraparte avaliar.`
+          : " O prazo expirou — atualize a página para publicar.";
+      }
       return `<h3 class="mt-4">Avaliações</h3>
-              <p class="text-muted text-small">A sua avaliação ficará visível quando a contraparte também avaliar (BR-06).</p>`;
+              <div class="card" style="padding:14px;background:var(--c-surface-2)">
+                <p class="text-small mt-0" style="margin-bottom:0">🔒 <strong>Avaliação oculta (double-blind, BR-06).</strong>${daysLeftMsg}</p>
+              </div>`;
     }
+
+    // Indica se ainda falta uma das partes (a outra ficou oculta)
+    const pendingOther =
+      (r.reviewByOwner && r.reviewByOwner.hidden) || (r.reviewByRenter && r.reviewByRenter.hidden);
+
     return `
       <h3 class="mt-4">Avaliações</h3>
       ${reviews.map(rv => `
@@ -1050,6 +1092,7 @@ const App = (() => {
           <small class="text-muted">${UI.dateTime(rv.at)}</small>
         </div>
       `).join("")}
+      ${pendingOther ? `<p class="text-muted text-small">A avaliação da outra parte continua oculta até esta ser publicada (BR-06).</p>` : ""}
     `;
   }
 
@@ -1161,6 +1204,10 @@ const App = (() => {
     if (seeded) {
       console.info("[Rent-a-Tool] Catálogo de demonstração carregado.");
     }
+
+    // Aplica a regra double-blind dos 14 dias a avaliações cujo prazo
+    // tenha expirado desde a última visita (BR-06).
+    Rentals.settleAllReviews();
 
     // Regista rotas
     Router.on(/^\/$/,                        (view)       => renderHome(view));

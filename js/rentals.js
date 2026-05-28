@@ -177,30 +177,40 @@ const Rentals = (() => {
   // ------------------------------------------------------------
   // UC-08 — Check-out (devolução)
   // ------------------------------------------------------------
-  // O proprietário confirma a devolução. Se "Sem ocorrências", o
-  // aluguer fica FINALIZADO, libertando-se a caução (simulado).
-  // Se "Com ocorrências", abrimos automaticamente um sinistro
-  // (UC-10) e o estado passa a EM_DISPUTA.
-  function checkOut({ rentalId, hasIssues, notes }) {
+  // ------------------------------------------------------------
+  // UC-08 — Check-out / Devolução (US8.1)
+  // ------------------------------------------------------------
+  // O proprietário confirma a devolução após inspeção física.
+  //   - Deve submeter ≥ 3 fotografias de prova (evidência).
+  //   - "Sem ocorrências": aluguer → FINALIZADO; liberta o pagamento
+  //     ao proprietário e a caução ao arrendatário (BR-03).
+  //   - "Com ocorrências": abre sinistro (UC-10) e passa a EM_DISPUTA.
+  const MIN_CHECKOUT_PHOTOS = 3;
+
+  function checkOut({ rentalId, hasIssues, notes, photos }) {
     const r = byId(rentalId);
     if (!r) return { ok: false, error: "Aluguer não encontrado." };
     if (r.state !== "ATIVO") return { ok: false, error: "O aluguer não está ATIVO." };
     if (roleOf(r) !== "owner") {
       return { ok: false, error: "Apenas o proprietário pode confirmar a devolução." };
     }
+    const nPhotos = Number(photos) || 0;
+    if (nPhotos < MIN_CHECKOUT_PHOTOS) {
+      return { ok: false, error: `É obrigatório submeter pelo menos ${MIN_CHECKOUT_PHOTOS} fotografias de prova.` };
+    }
 
     r.checkout = {
       at: new Date().toISOString(),
       hasIssues: !!hasIssues,
       notes: notes || "",
-      photos: 3
+      photos: nPhotos
     };
 
     if (hasIssues) {
       r.state = "EM_DISPUTA";
+      r.paymentState = "FROZEN";
       r.timeline.push({ state: "EM_DISPUTA", at: r.checkout.at,
-        label: "Devolução com ocorrências reportadas — aluguer em disputa" });
-      // Cria um relatório de sinistro associado
+        label: "Devolução com ocorrências — sinistro aberto, pagamentos congelados" });
       const reports = Storage.read("reports", []);
       reports.push({
         id: Storage.uid("rep"),
@@ -215,8 +225,9 @@ const Rentals = (() => {
     } else {
       r.state = "FINALIZADO";
       r.paymentState = "RELEASED";
+      r.finalizedAt = r.checkout.at;        // marca o início da janela de 14 dias (BR-06)
       r.timeline.push({ state: "FINALIZADO", at: r.checkout.at,
-        label: "Devolução confirmada — pagamento ao proprietário e caução libertada" });
+        label: "Devolução sem ocorrências — pagamento libertado ao proprietário e caução ao arrendatário (BR-03)" });
     }
 
     persist(r);
@@ -224,11 +235,16 @@ const Rentals = (() => {
   }
 
   // ------------------------------------------------------------
-  // UC-09 — Avaliar experiência
+  // UC-09 — Avaliar experiência (US9.1) — Double-Blind + 14 dias
   // ------------------------------------------------------------
-  // Implementação simplificada: cada parte submete a sua avaliação.
-  // Quando ambas submetem (ou quando passam 14 dias), tornam-se
-  // públicas e a média do avaliado é recalculada.
+  // Regra (BR-06): a avaliação de cada parte permanece OCULTA para a
+  // contraparte até que:
+  //   (a) ambas as partes tenham avaliado, OU
+  //   (b) tenham decorrido 14 dias desde a finalização do aluguer.
+  // Só nesse momento as avaliações são publicadas e a média de cada
+  // utilizador avaliado é recalculada (uma única vez por avaliação).
+  const REVIEW_BLIND_DAYS = 14;
+
   function review({ rentalId, stars, comment }) {
     const r = byId(rentalId);
     if (!r) return { ok: false, error: "Aluguer não encontrado." };
@@ -241,23 +257,74 @@ const Rentals = (() => {
     const at = new Date().toISOString();
     if (role === "renter") {
       if (r.reviewByRenter) return { ok: false, error: "Já submeteu uma avaliação para este aluguer." };
-      r.reviewByRenter = { stars, comment: (comment || "").slice(0, 500), at, hidden: !r.reviewByOwner };
+      r.reviewByRenter = { stars, comment: (comment || "").slice(0, 500), at, hidden: true, published: false };
     } else {
       if (r.reviewByOwner) return { ok: false, error: "Já submeteu uma avaliação para este aluguer." };
-      r.reviewByOwner = { stars, comment: (comment || "").slice(0, 500), at, hidden: !r.reviewByRenter };
+      r.reviewByOwner = { stars, comment: (comment || "").slice(0, 500), at, hidden: true, published: false };
     }
 
-    // Quando ambas existem, publicam-se e atualiza-se a média do avaliado.
-    if (r.reviewByRenter && r.reviewByOwner) {
-      r.reviewByRenter.hidden = false;
-      r.reviewByOwner.hidden = false;
-      updateUserRating(r.ownerId,  r.reviewByRenter.stars);
-      updateUserRating(r.renterId, r.reviewByOwner.stars);
-    }
+    r.timeline.push({ state: r.state, at,
+      label: `Avaliação submetida pelo ${role === "owner" ? "proprietário" : "arrendatário"} (oculta até ambos avaliarem ou ${REVIEW_BLIND_DAYS} dias)` });
 
-    r.timeline.push({ state: r.state, at, label: `Avaliação submetida pelo ${role === "owner" ? "proprietário" : "arrendatário"}` });
+    // Tenta publicar já (caso ambos tenham agora avaliado).
+    settleReviews(r);
     persist(r);
     return { ok: true, rental: r };
+  }
+
+  /**
+   * Aplica a regra double-blind a um aluguer: publica as avaliações
+   * existentes se ambos avaliaram OU se passaram 14 dias da finalização.
+   * Atualiza a média do avaliado uma única vez por avaliação (published).
+   * Devolve true se houve alguma alteração.
+   */
+  function settleReviews(r) {
+    if (r.state !== "FINALIZADO") return false;
+    const bothReviewed = !!(r.reviewByRenter && r.reviewByOwner);
+    const base = r.finalizedAt || (r.checkout && r.checkout.at);
+    let deadlinePassed = false;
+    if (base) {
+      const ageDays = (Date.now() - new Date(base).getTime()) / 86400000;
+      deadlinePassed = ageDays >= REVIEW_BLIND_DAYS;
+    }
+    if (!bothReviewed && !deadlinePassed) return false;
+
+    let changed = false;
+    // Avaliação do arrendatário (sobre o proprietário)
+    if (r.reviewByRenter && !r.reviewByRenter.published) {
+      r.reviewByRenter.hidden = false;
+      r.reviewByRenter.published = true;
+      updateUserRating(r.ownerId, r.reviewByRenter.stars);
+      changed = true;
+    }
+    // Avaliação do proprietário (sobre o arrendatário)
+    if (r.reviewByOwner && !r.reviewByOwner.published) {
+      r.reviewByOwner.hidden = false;
+      r.reviewByOwner.published = true;
+      updateUserRating(r.renterId, r.reviewByOwner.stars);
+      changed = true;
+    }
+    return changed;
+  }
+
+  /**
+   * Varre todos os alugueres e liquida avaliações cujo prazo expirou.
+   * Deve ser chamada no arranque da app (ver app.js) para garantir que
+   * a regra dos 14 dias é aplicada mesmo sem nova avaliação.
+   */
+  function settleAllReviews() {
+    const all = Storage.read("rentals", []);
+    let anyChange = false;
+    all.forEach(r => {
+      const before = JSON.stringify([r.reviewByRenter, r.reviewByOwner]);
+      if (settleReviews(r)) {
+        const idx = all.findIndex(x => x.id === r.id);
+        if (idx >= 0) all[idx] = r;
+        anyChange = anyChange || (before !== JSON.stringify([r.reviewByRenter, r.reviewByOwner]));
+      }
+    });
+    if (anyChange) Storage.write("rentals", all);
+    return anyChange;
   }
 
   function updateUserRating(userId, newStars) {
@@ -342,6 +409,8 @@ const Rentals = (() => {
     ofCurrent, byId, groupForUser, roleOf, stateLabel, stateBadgeClass,
     generatePairing, validatePairing, checkinStage,
     checkOut, review, report,
-    PAIRING_TTL_MIN, MIN_CHECKIN_PHOTOS, INSURANCE_THRESHOLD
+    settleReviews, settleAllReviews,
+    PAIRING_TTL_MIN, MIN_CHECKIN_PHOTOS, MIN_CHECKOUT_PHOTOS,
+    INSURANCE_THRESHOLD, REVIEW_BLIND_DAYS
   };
 })();

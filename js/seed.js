@@ -127,7 +127,7 @@ const Seed = (() => {
       city: "Lisboa",
       neighborhood: "Alvalade",
       conservation: "COMO_NOVO",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_afonso_costa",
       image: SVG.drill,
       blockedDates: []
     },
@@ -141,7 +141,7 @@ const Seed = (() => {
       city: "Lisboa",
       neighborhood: "Areeiro",
       conservation: "BOM",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_martim_sarm",
       image: SVG.saw,
       blockedDates: []
     },
@@ -155,7 +155,7 @@ const Seed = (() => {
       city: "Porto",
       neighborhood: "Foz",
       conservation: "BOM",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_antonio_v",
       image: SVG.mower,
       blockedDates: []
     },
@@ -169,7 +169,7 @@ const Seed = (() => {
       city: "Lisboa",
       neighborhood: "Telheiras",
       conservation: "BOM",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_filipe_lopes",
       image: SVG.ladder,
       blockedDates: []
     },
@@ -183,7 +183,7 @@ const Seed = (() => {
       city: "Lisboa",
       neighborhood: "Benfica",
       conservation: "COMO_NOVO",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_afonso_lamas",
       image: SVG.sander,
       blockedDates: []
     },
@@ -197,7 +197,7 @@ const Seed = (() => {
       city: "Porto",
       neighborhood: "Boavista",
       conservation: "COMO_NOVO",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_yuran_c",
       image: SVG.pressureWasher,
       blockedDates: []
     },
@@ -211,7 +211,7 @@ const Seed = (() => {
       city: "Porto",
       neighborhood: "Matosinhos",
       conservation: "BOM",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_bohdan_b",
       image: SVG.leafBlower,
       blockedDates: []
     },
@@ -225,25 +225,24 @@ const Seed = (() => {
       city: "Lisboa",
       neighborhood: "Lumiar",
       conservation: "BOM",
-      ownerId: "usr_owner_demo",
+      ownerId: "usr_sofia_marques",
       image: SVG.multitool,
       blockedDates: []
     }
   ];
 
-  /** Proprietário fictício, já com KYC validado, para o catálogo estar pronto. */
-  const OWNER = {
-    id: "usr_owner_demo",
-    name: "João Silva",
-    email: "joao.silva@exemplo.pt",
-    phone: "9XX XXX XXX",
-    kycStatus: "VALIDADO",
-    trustedBadge: true,
-    rating: 4.8,
-    ratingCount: 24,
-    city: "Lisboa",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 90).toISOString()
-  };
+  /** Proprietários fictícios, já com KYC validado, para o catálogo estar pronto. */
+  const daysAgo = (d) => new Date(Date.now() - 1000 * 60 * 60 * 24 * d).toISOString();
+  const OWNERS = [
+    { id: "usr_afonso_costa",  name: "Afonso Costa",    email: "afonso.costa@exemplo.pt",    phone: "9XX XXX 101", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.8, ratingCount: 24, city: "Lisboa", createdAt: daysAgo(120) },
+    { id: "usr_martim_sarm",   name: "Martim Sarmento", email: "martim.sarmento@exemplo.pt", phone: "9XX XXX 102", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.6, ratingCount: 17, city: "Lisboa", createdAt: daysAgo(95) },
+    { id: "usr_antonio_v",     name: "António Vieira",   email: "antonio.vieira@exemplo.pt",  phone: "9XX XXX 103", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.9, ratingCount: 31, city: "Porto",  createdAt: daysAgo(140) },
+    { id: "usr_filipe_lopes",  name: "Filipe Lopes",    email: "filipe.lopes@exemplo.pt",    phone: "9XX XXX 104", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.5, ratingCount: 12, city: "Lisboa", createdAt: daysAgo(60) },
+    { id: "usr_yuran_c",       name: "Yuran Carrelo",   email: "yuran.carrelo@exemplo.pt",   phone: "9XX XXX 105", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.7, ratingCount: 20, city: "Porto",  createdAt: daysAgo(110) },
+    { id: "usr_bohdan_b",      name: "Bohdan Bazhaluk", email: "bohdan.bazhaluk@exemplo.pt", phone: "9XX XXX 106", kycStatus: "VALIDADO", trustedBadge: true, rating: 5.0, ratingCount: 9,  city: "Porto",  createdAt: daysAgo(45) },
+    { id: "usr_afonso_lamas",  name: "Afonso Lamas",    email: "afonso.lamas@exemplo.pt",    phone: "9XX XXX 107", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.4, ratingCount: 15, city: "Lisboa", createdAt: daysAgo(80) },
+    { id: "usr_sofia_marques", name: "Sofia Marques",   email: "sofia.marques@exemplo.pt",   phone: "9XX XXX 108", kycStatus: "VALIDADO", trustedBadge: true, rating: 4.8, ratingCount: 22, city: "Lisboa", createdAt: daysAgo(100) }
+  ];
 
   /** Categorias para o filtro. */
   const CATEGORIES = [
@@ -275,7 +274,7 @@ const Seed = (() => {
   }
 
   function seedNow() {
-    Storage.write("users", [OWNER]);
+    Storage.write("users", OWNERS.slice());
     Storage.write("tools", TOOLS);
     Storage.write("rentals", []);
     Storage.write("messages", []);         // threads de mensagens

@@ -98,7 +98,7 @@ demonstração.
 6. **Check-in (código de pairing, US6.1)**: como proprietário, registar ≥ 3
    fotografias e **gerar o código** de 6 dígitos (válido 15 min).
 7. Voltar à página inicial, fazer logout e entrar como o proprietário
-   (`joao.silva@exemplo.pt` no quick-login) — ou vice-versa, conforme o papel.
+   (ex.: `afonso.costa@exemplo.pt` no quick-login) — ou vice-versa, conforme o papel.
 8. Como **arrendatário**, abrir o mesmo aluguer e **inserir o código**. Após a
    validação bilateral, o aluguer transita para **ATIVO**.
 9. **Check-out** "Sem ocorrências" → estado **FINALIZADO**.

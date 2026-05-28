@@ -1,0 +1,148 @@
+{
+  "id": "rentatool-suite-1",
+  "version": "2.0",
+  "name": "Rent-a-Tool — Testes de Aceitação (User Stories)",
+  "url": "http://localhost:8000",
+  "tests": [
+    {
+      "id": "t-us1-1",
+      "name": "US1.1 - Criar conta com sucesso (Cenario 1)",
+      "commands": [
+        { "id": "c1", "command": "open", "target": "/", "value": "" },
+        { "id": "c2", "command": "runScript", "target": "window.localStorage.clear()", "value": "" },
+        { "id": "c3", "command": "open", "target": "/#/registo", "value": "" },
+        { "id": "c4", "command": "pause", "target": "600", "value": "" },
+        { "id": "c5", "command": "type", "target": "name=name", "value": "Artur Teste" },
+        { "id": "c6", "command": "select", "target": "name=city", "value": "label=Lisboa" },
+        { "id": "c7", "command": "type", "target": "name=email", "value": "artur.teste@exemplo.pt" },
+        { "id": "c8", "command": "type", "target": "name=phone", "value": "912345678" },
+        { "id": "c9", "command": "runScript", "target": "document.querySelector(\"input[name='birthDate']\").value='2000-05-10'", "value": "" },
+        { "id": "c10", "command": "click", "target": "css=input[name='kycMethod'][value='cmd']", "value": "" },
+        { "id": "c11", "command": "click", "target": "css=#registerForm button[type='submit']", "value": "" },
+        { "id": "c12", "command": "pause", "target": "700", "value": "" },
+        { "id": "c13", "command": "verifyElementPresent", "target": "css=.userbox__badge--trusted", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us1-2",
+      "name": "US1.2 - Bloqueio por idade <16 (Cenario 2)",
+      "commands": [
+        { "id": "c1", "command": "open", "target": "/", "value": "" },
+        { "id": "c2", "command": "runScript", "target": "window.localStorage.clear()", "value": "" },
+        { "id": "c3", "command": "open", "target": "/#/registo", "value": "" },
+        { "id": "c4", "command": "pause", "target": "600", "value": "" },
+        { "id": "c5", "command": "type", "target": "name=name", "value": "Menor Teste" },
+        { "id": "c6", "command": "type", "target": "name=email", "value": "menor@exemplo.pt" },
+        { "id": "c7", "command": "type", "target": "name=phone", "value": "912345679" },
+        { "id": "c8", "command": "runScript", "target": "document.querySelector(\"input[name='birthDate']\").value='2015-01-01'", "value": "" },
+        { "id": "c9", "command": "click", "target": "css=input[name='kycMethod'][value='cmd']", "value": "" },
+        { "id": "c10", "command": "click", "target": "css=#registerForm button[type='submit']", "value": "" },
+        { "id": "c11", "command": "pause", "target": "400", "value": "" },
+        { "id": "c12", "command": "verifyElementPresent", "target": "css=.field__error", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us3-1",
+      "name": "US3.1 - Pesquisa com filtros",
+      "commands": [
+        { "id": "c1", "command": "open", "target": "/#/", "value": "" },
+        { "id": "c2", "command": "pause", "target": "600", "value": "" },
+        { "id": "c3", "command": "select", "target": "name=category", "value": "label=Jardim" },
+        { "id": "c4", "command": "type", "target": "name=priceMax", "value": "20" },
+        { "id": "c5", "command": "click", "target": "css=#searchForm button[type='submit']", "value": "" },
+        { "id": "c6", "command": "pause", "target": "500", "value": "" },
+        { "id": "c7", "command": "verifyElementPresent", "target": "css=.tool-card", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us5-1",
+      "name": "US5.1 - Reservar ferramenta (precisa de sessao iniciada)",
+      "commands": [
+        { "id": "c1", "command": "open", "target": "/#/", "value": "" },
+        { "id": "c2", "command": "pause", "target": "600", "value": "" },
+        { "id": "c3", "command": "click", "target": "css=.tool-card a", "value": "" },
+        { "id": "c4", "command": "pause", "target": "600", "value": "" },
+        { "id": "c5", "command": "click", "target": "css=form[id^='reserveForm'] button[type='submit'], css=.detail__sidebar button[type='submit']", "value": "" },
+        { "id": "c6", "command": "pause", "target": "600", "value": "" },
+        { "id": "c7", "command": "verifyElementPresent", "target": "css=.timeline", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us4-1",
+      "name": "US4.1 - Anti-bypass nas mensagens (Cenario 2)",
+      "commands": [
+        { "id": "c1", "command": "comment", "target": "", "value": "Pressupoe estar dentro de uma thread de mensagens" },
+        { "id": "c2", "command": "type", "target": "css=.chat__input input", "value": "Liga-me para 912345678" },
+        { "id": "c3", "command": "click", "target": "css=.chat__input button", "value": "" },
+        { "id": "c4", "command": "pause", "target": "400", "value": "" },
+        { "id": "c5", "command": "verifyText", "target": "css=.chat__messages", "value": "*removido*" },
+        { "id": "c6", "command": "verifyElementPresent", "target": "css=.toast--warn", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us6-1",
+      "name": "US6.1 - Check-in proprietario gera codigo (>=3 fotos)",
+      "commands": [
+        { "id": "c1", "command": "comment", "target": "", "value": "Pressupoe estar no detalhe de um aluguer CONFIRMADO como proprietario" },
+        { "id": "c2", "command": "click", "target": "css=[data-action='checkin-owner']", "value": "" },
+        { "id": "c3", "command": "pause", "target": "400", "value": "" },
+        { "id": "c4", "command": "verifyElementPresent", "target": "id=genCode", "value": "" },
+        { "id": "c5", "command": "assertNotEditable", "target": "id=genCode", "value": "" },
+        { "id": "c6", "command": "click", "target": "css=.photo-slot[data-i='1']", "value": "" },
+        { "id": "c7", "command": "click", "target": "css=.photo-slot[data-i='2']", "value": "" },
+        { "id": "c8", "command": "click", "target": "css=.photo-slot[data-i='3']", "value": "" },
+        { "id": "c9", "command": "click", "target": "id=genCode", "value": "" },
+        { "id": "c10", "command": "pause", "target": "400", "value": "" },
+        { "id": "c11", "command": "storeEval", "target": "JSON.parse(localStorage['rentatool.v1.rentals']).find(function(r){return r.checkin&&r.checkin.code;}).checkin.code", "value": "pairCode" },
+        { "id": "c12", "command": "echo", "target": "Codigo gerado: ${pairCode}", "value": "" }
+      ]
+    },
+    {
+      "id": "t-us6-2",
+      "name": "US6.1 - Arrendatario insere codigo e ativa (Regra 4)",
+      "commands": [
+        { "id": "c1", "command": "comment", "target": "", "value": "Apos trocar para o arrendatario e abrir o mesmo aluguer" },
+        { "id": "c2", "command": "click", "target": "css=[data-action='checkin-renter']", "value": "" },
+        { "id": "c3", "command": "pause", "target": "400", "value": "" },
+        { "id": "c4", "command": "type", "target": "css=input[name='code']", "value": "${pairCode}" },
+        { "id": "c5", "command": "click", "target": "id=validateCode", "value": "" },
+        { "id": "c6", "command": "pause", "target": "600", "value": "" },
+        { "id": "c7", "command": "verifyText", "target": "css=.timeline", "value": "*ativo*" }
+      ]
+    },
+    {
+      "id": "t-us10-1",
+      "name": "US10.1 - Reportar FURTO sem queixa e bloqueado (Cenario 2)",
+      "commands": [
+        { "id": "c1", "command": "comment", "target": "", "value": "No detalhe de um aluguer ATIVO" },
+        { "id": "c2", "command": "click", "target": "css=[data-action='report']", "value": "" },
+        { "id": "c3", "command": "pause", "target": "400", "value": "" },
+        { "id": "c4", "command": "select", "target": "css=select[name='type']", "value": "label=Furto / desaparecimento" },
+        { "id": "c5", "command": "type", "target": "css=.modal textarea[name='notes']", "value": "A ferramenta desapareceu apos a devolucao." },
+        { "id": "c6", "command": "click", "target": "id=submitReport", "value": "" },
+        { "id": "c7", "command": "pause", "target": "400", "value": "" },
+        { "id": "c8", "command": "verifyElementPresent", "target": "css=.toast--warn", "value": "" },
+        { "id": "c9", "command": "comment", "target": "", "value": "Continua na modal porque foi bloqueado; agora anexa a queixa" },
+        { "id": "c10", "command": "click", "target": "id=policeUpload", "value": "" },
+        { "id": "c11", "command": "click", "target": "id=submitReport", "value": "" },
+        { "id": "c12", "command": "pause", "target": "500", "value": "" },
+        { "id": "c13", "command": "verifyText", "target": "css=.timeline", "value": "*disputa*" }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "suite-all",
+      "name": "Suite completa",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "t-us1-1", "t-us1-2", "t-us3-1", "t-us5-1",
+        "t-us4-1", "t-us6-1", "t-us6-2", "t-us10-1"
+      ]
+    }
+  ],
+  "urls": ["http://localhost:8000"],
+  "plugins": []
+}
